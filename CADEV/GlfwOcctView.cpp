@@ -220,8 +220,6 @@ void GlfwOcctView::renderGui()
 
     ImGui::ShowDemoWindow();
 
-    //This is my place
-
     // Hello IMGUI.
     ImGui::Begin("Hello");
     ImGui::Text("Hello ImGui!");
