@@ -20,9 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-//Нужно, чтобы отображались русские буквы
-#pragma execution_character_set("utf-8")
-
 #include "GlfwOcctView.h"
 
 #include "imgui/imgui_impl_glfw.h"
@@ -188,17 +185,11 @@ void GlfwOcctView::initViewer()
     aViewer->SetDefaultLights();
     aViewer->SetLightOn();
     aViewer->SetDefaultTypeOfView(V3d_PERSPECTIVE);
-    //Сетка
-    //aViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
+    aViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
     myView = aViewer->CreateView();
     myView->SetImmediateUpdate(Standard_False);
     myView->SetWindow(myOcctWindow, myOcctWindow->NativeGlContext());
-
-    //Счётчик фпс и других параметров
-    //myView->ChangeRenderingParams().ToShowStats = Standard_True;
-    
-    //Цвет фонового простанства
-    myView->SetBackgroundColor(Quantity_TOC_RGB, 0.2, 0.2, 0.2);
+    myView->ChangeRenderingParams().ToShowStats = Standard_True;
 
     myContext = new AIS_InteractiveContext(aViewer);
 }
@@ -210,8 +201,6 @@ void GlfwOcctView::initGui()
 
     ImGuiIO& aIO = ImGui::GetIO();
     //aIO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-    ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Verdana.ttf", 16.0f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 
     ImGui_ImplGlfw_InitForOpenGL(myOcctWindow->getGlfwWindow(), Standard_True);
     ImGui_ImplOpenGL3_Init("#version 450");
@@ -229,78 +218,17 @@ void GlfwOcctView::renderGui()
 
     ImGui::NewFrame();
 
-    //Окно инструменты
-    {
-        // Установка цвета фона
-        ImGuiStyle& style = ImGui::GetStyle();
-        ImVec4* colors = style.Colors;
-        colors[ImGuiCol_WindowBg] = ImVec4(0.54f, 0.52f, 0.51f, 1.0f); // Новый цвет фона  
+    ImGui::ShowDemoWindow();
 
-        // Установка размеров и расположения окна
-        ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-        ImVec2 windowSize(screenSize.x, screenSize.y * 0.2f);
+    // Hello IMGUI.
+    ImGui::Begin("Hello");
+    ImGui::Text("Hello ImGui!");
+    ImGui::Text("Hello OpenCASCADE!");
+    ImGui::Button("OK");
+    ImGui::SameLine();
+    ImGui::Button("Cancel");
+    ImGui::End();
 
-        ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
-        ImGui::SetNextWindowPos(ImVec2(0, 0));
-
-        ImGui::Begin("Tools", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
-
-        if (ImGui::BeginMenuBar())
-        {
-           if (ImGui::BeginMenu("Файл"))
-            {
-                if (ImGui::MenuItem("Открыть", "Ctrl+O")) { /* Действие при выборе пункта меню */ }
-                if (ImGui::MenuItem("Сохранить", "Ctrl+S")) { /* Действие при выборе пункта меню */ }
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenuBar();
-        }
-        ImGui::Text("Это окно с инструментами!");
-        ImGui::Text("Это окно с инструментами!");
-        ImGui::Text("Это окно с инструментами!");
-        
-
-        ImGui::End();
-    }
-
-    //Окно история
-    {
-        // Установка размеров и расположения окна
-        //С статус баром
-        /*{
-            ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-            ImVec2 windowSize(screenSize.x * 0.2f, screenSize.y * 0.75f);
-
-            ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
-            ImGui::SetNextWindowPos(ImVec2(0, screenSize.y * 0.2f));
-        }*/
-        
-        //Без статус бара
-        {
-            ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-            ImVec2 windowSize(screenSize.x * 0.2f, screenSize.y * 0.8f);
-
-            ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
-            ImGui::SetNextWindowPos(ImVec2(0, screenSize.y * 0.2f));
-        }
-
-        ImGui::Begin("History", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
-        ImGui::Text("Это окно с историей!");
-        ImGui::End();
-    }
-    
-    // Статус бар
-    /*{
-        ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-        ImVec2 windowSize(screenSize.x, screenSize.y * 0.05);
-
-        ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
-        ImGui::SetNextWindowPos(ImVec2(0, screenSize.y * 0.95));
-
-        ImGui::Begin("StatusBar", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
-        ImGui::Text("Это статус бар!");
-        ImGui::End();
-    }*/
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
