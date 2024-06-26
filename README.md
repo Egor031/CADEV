@@ -1,7 +1,5 @@
 # CADEV
 
-Проект пока не готовый.
-
 Так все dll файлы OpenCascade отсутствуют на GitHub, их необходимо скачать вручную:
 
 https://drive.google.com/file/d/1Qw5F6beNd-7M-x2ZYZD0Q6vtrFRw25_H/view?usp=sharing
