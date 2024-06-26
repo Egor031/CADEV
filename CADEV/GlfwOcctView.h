@@ -59,6 +59,66 @@ private:
     //! Fill 3D Viewer with a DEMO items.
     void initDemoScene();
 
+    //! Build Box.
+    void MakeBox(static char xpoint[10], static char xlen[10], static char ypoint[10], static char ylen[10], static char zpoint[10], static char zlen[10]);
+
+    //! Build Box.
+    void MakeSph(static char xpoint[10], static char ypoint[10], static char zpoint[10], static char R[10]);
+
+    //! Do cut body.
+    void MakeCut(TopoDS_Shape, TopoDS_Shape);
+
+    //! Build Cyl.
+    void MakeCyl(static char xpoint[10], static char ypoint[10], static char zpoint[10], static char r[10], static char h[10], static char xdir[10], static char ydir[10], static char zdir[10]);
+
+    //! Build Con.
+    void MakeCon(static char xpoint[10], static char ypoint[10], static char zpoint[10], static char r1[10], static char r2[10], static char h[10], static char xdir[10], static char ydir[10], static char zdir[10]);
+
+    //! MakeCirc.
+    void MakeCirc();
+
+    //! MakeCirc.
+    void MakeRevolute(static char value[10], static int xax, static int yax, static int zax, static char xpnt[10], static char ypnt[10], static char zpnt[10]);
+
+    //! MakeCirc.
+    void MakeExtrude(static char value[10], static int xax, static int yax, static int zax);
+
+    //! render input digit error
+    void RenderInputDigitError();
+
+    //! JustTemp
+    void Tempfunc();
+
+    //! JustTemp
+    void Tempfunc2();
+
+    //! Do fuse body.
+    void MakeFuse(TopoDS_Shape, TopoDS_Shape);
+
+    //! doSave
+    void MakeSave(static char path[100]);
+
+    //! doLoad
+    void MakeLoad(static char path[100]);
+
+    //Построить точку
+    void BuildPoint(gp_Pnt A);
+
+    //Построить линию
+    void BuildLine(gp_Pnt A, gp_Pnt B);
+
+    void BuildCircle(gp_Pnt Point, gp_Dir Dir, double Radius);
+
+    void BuildElips(gp_Pnt Point, gp_Dir Dir, double MaxRadius, double MinRadius);
+
+    void BuildArc(gp_Pnt Point1, gp_Pnt Point2, gp_Pnt Point3);
+
+    //Закрыть скетч
+    void CloseSketch();
+
+
+    void CheckSketch();
+
     //! Application event loop.
     void mainloop();
 
