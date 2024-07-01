@@ -145,7 +145,7 @@ void GlfwOcctView::errorCallback(int theError, const char* theDescription)
 
 void GlfwOcctView::run()
 {
-    initWindow(800, 600, "CADEV");
+    initWindow(1230-50, 1030-50, "CADEV");
     initViewer();
     if (myView.IsNull())
     {
@@ -529,7 +529,13 @@ void GlfwOcctView::MakeRevolute(static char value[10], static int xax, static in
                         aAISShape->SetMaterial(Graphic3d_NOM_CHROME);
                         aAISShape->SetDisplayMode(AIS_Shaded);
                         myContext->Display(aAISShape, true);
-
+                        /*
+                        TopoDS_Shape shape2 = shape;
+                        Handle(AIS_Shape) aAISShape22 = new AIS_Shape(shape2);
+                        aAISShape22->SetDisplayMode(AIS_WireFrame);
+                        aAISShape22->SetColor(Quantity_NOC_BLACK);
+                        myContext->Display(aAISShape22, true);
+                        */
                         history_vectorTopoDs.push_back(shape);
                         history_vectorAIS.push_back(aAISShape);
                         strcat_s(a, "Вращение\n");
@@ -580,7 +586,7 @@ void GlfwOcctView::MakeExtrude(static char value[10], static int xax, static int
                     strcat_s(a, "Вытягивание\n");
                 }
             }
-        erroridFlag = true;
+        else erroridFlag = true;
     }
 }
 
@@ -678,28 +684,9 @@ void GlfwOcctView::BuildPoint(gp_Pnt Point)
 
 void GlfwOcctView::BuildLine(gp_Pnt Point1, gp_Pnt Point2)
 {
-
-    /*Handle(AIS_Shape) TempBuildPoint;
-    TopoDS_Vertex vertex = BRepBuilderAPI_MakeVertex(Point1);
-    TempBuildPoint = new AIS_Shape(vertex);
-    TempBuildPoint->SetColor(Quantity_NOC_YELLOW1);
-    myContext->Display(TempBuildPoint, true);*/
-
-    //Handle(Geom_CartesianPoint) p1 = new Geom_CartesianPoint(Point1);
-    //Handle(Geom_CartesianPoint) p2 = new Geom_CartesianPoint(Point2);
-
-    //BRepBuilderAPI_MakeWire MakeWr;
-
     TopoDS_Edge line1 = BRepBuilderAPI_MakeEdge(Point1, Point2);
-
     SketchAdd.push_back(line1);
-    //MakeWr.Add(line1);
-    //TopoDS_Wire Wr = MakeWr;
-
     ShapeBuild.push_back(new AIS_Shape(SketchAdd.back()));
-
-    //Handle(AIS_Line) lineVision = new AIS_Line(p1, p2);
-
     myContext->Display(ShapeBuild.back(), true);
 }
 
@@ -1313,10 +1300,10 @@ void GlfwOcctView::renderGui()
                     xConvertPoint = std::stod(Xpoint);
                     yConvertPoint = std::stod(Ypoint);
                     //zConvertPoint = std::stod(Zpoint);
-                    zConvertPoint = 0;
+                    //zConvertPoint = 0;
                 }
 
-                if (create == false)
+                /*if (create == false)
                 {
                     tempPoint = gp_Pnt(xConvertPoint, yConvertPoint, zConvertPoint);
 
@@ -1333,7 +1320,22 @@ void GlfwOcctView::renderGui()
                     Xoldpoint = xConvertPoint;
                     Yoldpoint = yConvertPoint;
                     Zoldpoint = zConvertPoint;
+                }*/
+
+                if (create == false || Xoldpoint != xConvertPoint || Yoldpoint != yConvertPoint) {
+                    if (create) {
+                        myContext->Erase(TempBuildPoint, true);
+                    }
+                    tempPoint = gp_Pnt(xConvertPoint, yConvertPoint, 0); // Задаем координату Z нулевой
+                    TopoDS_Vertex vertex = BRepBuilderAPI_MakeVertex(tempPoint);
+                    TempBuildPoint = new AIS_Shape(vertex);
+                    TempBuildPoint->SetColor(Quantity_NOC_YELLOW1);
+                    myContext->Display(TempBuildPoint, true);
+                    create = true;
+                    Xoldpoint = xConvertPoint;
+                    Yoldpoint = yConvertPoint;
                 }
+
                 if (ImGui::Button("OK"))
                 {
                     myContext->Erase(TempBuildPoint, true);
@@ -1602,6 +1604,7 @@ void GlfwOcctView::renderGui()
 
                 ImGui::End();
             }
+            ImGui::SameLine();
             if (ImGui::Button("Многоугольник")) { polygonFlag = true; }
             if (polygonFlag)
             {
@@ -2148,7 +2151,7 @@ void GlfwOcctView::renderGui()
         {
 
             ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-            ImVec2 windowSize(screenSize.x * 0.2f, screenSize.y * 0.8f);
+            ImVec2 windowSize(screenSize.x * 0.23f, screenSize.y * 0.8f);
             ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
             ImGui::SetNextWindowPos(ImVec2(0, screenSize.y * 0.2f));
             ImGuiStyle& style = ImGui::GetStyle();
